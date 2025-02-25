@@ -1,4 +1,4 @@
-fetch("http://localhost:3000/api/shops")
+fetch("http://localhost:3000/api/stores")
   .then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not OK");

@@ -21,6 +21,8 @@ async function connectDB() {
   }
 }
 
+module.exports = { client, connectDB };
+
 function createTable() {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS stores (
@@ -67,42 +69,12 @@ async function selectRecords() {
   }
 }
 
-// async function getIDByURL(url) {
-//   const selectQuery = "SELECT id FROM stores WHERE url = $1;";
-//   try {
-//     const res = await client.query(selectQuery, [url]);
-//     return res.rows[0].id;
-//   } catch (err) {
-//     console.error("Error getting ID", err.stack);
-//   }
-// }
-// getIDByURL("urlSWAG").then((id) => {
-//   console.log("ID:", id);
-// });
-
-// function updateRecord(updateValues) {
-//   const updateQuery = `
-//     UPDATE stores
-//     SET name = $1, url = $2, district = $3
-//     WHERE id = $4
-//     RETURNING *;
-//     `;
-//   client
-//     .query(updateQuery, updateValues)
-//     .then((res) => console.log("Updated record:", res.rows[0]))
-//     .catch((err) => console.error("Error updating record", err.stack));
-// }
-
-// getIDByURL("url").then((id) => {
-//   console.log("ID:", id);
-//   updateRecord(["Tilde", "honarking.se", "dinmamma", id]);
-// });
-
 connectDB();
 createTable();
-// insertRecordsFromFile("stores.json");
+insertRecordsFromFile("stores.json");
 selectRecords();
 
+// Commands for the terminal
 //enter container: docker exec -it my-postgres-container bash
 //connect database: psql postgresql://postgres:12345@127.0.0.1:5432/postgres
 // delete table: DROP TABLE IF EXISTS stores;
