@@ -10,6 +10,7 @@ fetch("http://localhost:3000/api/stores")
     let list = document.querySelector("#listOfShops");
     data.forEach((shop) => {
       let newElem = document.createElement("li");
+      newElem.classList.add("listItem");
       newElem.innerText = `${shop.name}`;
       list.appendChild(newElem);
     });

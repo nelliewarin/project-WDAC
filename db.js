@@ -71,7 +71,7 @@ async function selectRecords() {
 
 connectDB();
 createTable();
-insertRecordsFromFile("stores.json");
+// insertRecordsFromFile("stores.json");
 selectRecords();
 
 // Commands for the terminal
