@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const { Client } = require("pg");
 // Configure the client to connect to your containerized PostgreSQL
 
@@ -22,9 +25,7 @@ function createTable() {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS stores (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50),
-    url VARCHAR(255) UNIQUE,
-    district VARCHAR(50)
+    data JSON NOT NULL
     ); 
     `;
   client
@@ -33,17 +34,27 @@ function createTable() {
     .catch((err) => console.error("Error creating table", err.stack));
 }
 
-const insertValues = ["NameOfStore", "urlSWAG?", "District"];
-function insertRecord(insertValues) {
-  const insertQuery = `
-    INSERT INTO stores (name, url, district)
-    VALUES ($1, $2, $3)
-    RETURNING *;
-    `;
-  client
-    .query(insertQuery, insertValues)
-    .then((res) => console.log("Inserted record:", res.rows[0]))
-    .catch((err) => console.error("Error inserting record", err.stack));
+async function insertRecordsFromFile(filename) {
+  const filePath = path.join(__dirname, "public", filename);
+
+  try {
+    const data = await fs.promises.readFile(filePath, "utf8");
+    const jsonObjects = JSON.parse(data);
+
+    // Inserts every objects in the stores-table
+    for (let jsonObject of jsonObjects) {
+      const insertQuery = `
+          INSERT INTO stores (data)
+          VALUES ($1)
+          RETURNING *;
+        `;
+      const jsonString = JSON.stringify(jsonObject);
+      const res = await client.query(insertQuery, [jsonString]);
+      console.log("Inserted record:", res.rows[0]);
+    }
+  } catch (err) {
+    console.error("Error reading or inserting records", err.stack);
+  }
 }
 
 async function selectRecords() {
@@ -89,5 +100,9 @@ async function selectRecords() {
 
 connectDB();
 createTable();
-// insertRecord(insertValues);
+// insertRecordsFromFile("stores.json");
 selectRecords();
+
+//enter container: docker exec -it my-postgres-container bash
+//connect database: psql postgresql://postgres:12345@127.0.0.1:5432/postgres
+// delete table: DROP TABLE IF EXISTS stores;
