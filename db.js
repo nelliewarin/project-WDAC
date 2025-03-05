@@ -5,11 +5,11 @@ const { Client } = require("pg");
 // Configure the client to connect to your containerized PostgreSQL
 
 const client = new Client({
-  host: "localhost", // since the container's port is mapped to localhost
+  host: "localhost",
   port: 5432,
-  user: "postgres", // default user
-  password: "12345", // password set in the container command
-  database: "postgres", // default database
+  user: "postgres",
+  password: "12345",
+  database: "postgres", 
 });
 
 async function connectDB() {
@@ -59,6 +59,7 @@ async function insertRecordsFromFile(filename) {
   }
 }
 
+// Logs all contents from stores table
 async function selectRecords() {
   const selectQuery = "SELECT * FROM stores;";
   try {
@@ -72,7 +73,7 @@ async function selectRecords() {
 connectDB();
 createTable();
 // insertRecordsFromFile("stores.json");
-selectRecords();
+// selectRecords();
 
 // Commands for the terminal
 //enter container: docker exec -it my-postgres-container bash
